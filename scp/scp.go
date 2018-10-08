@@ -5,10 +5,12 @@ package scp
 import (
 	"errors"
 	"fmt"
-	"github.com/laher/uggo"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/laher/uggo"
+	"golang.org/x/crypto/ssh"
 )
 
 const (
@@ -23,7 +25,7 @@ type SecureCopier struct {
 	IsQuiet           bool
 	IsVerbose         bool
 	IsCheckKnownHosts bool
-	KeyFile        string
+	KeyFile           string
 
 	srcHost string
 	srcUser string
@@ -31,7 +33,9 @@ type SecureCopier struct {
 	dstHost string
 	dstUser string
 	dstFile string
+	session *ssh.Session
 }
+
 func (scp *SecureCopier) Name() string {
 	return "scp"
 }
@@ -150,12 +154,10 @@ func parseTarget(target string) (string, string, string, error) {
 	}
 }
 
-
 func sendByte(w io.Writer, val byte) error {
 	_, err := w.Write([]byte{val})
 	return err
 }
-
 
 func ScpCli(args []string) (error, int) {
 	scper := new(SecureCopier)
@@ -166,6 +168,4 @@ func ScpCli(args []string) (error, int) {
 	err, status = scper.Exec(os.Stdin, os.Stdout, os.Stderr)
 	return err, status
 
-
 }
-

@@ -38,6 +38,10 @@ func (scp *SecureCopier) scpFromRemote(srcUser, srcHost, srcFile, dstFile string
 		useSpecifiedFilename = true
 	}
 	//from-scp
+	if scp.session != nil{
+		session := scp.session
+	}
+	else
 	session, err := sshconn.Connect(srcUser, srcHost, scp.Port, scp.KeyFile, scp.IsCheckKnownHosts, scp.IsVerbose, errPipe)
 	if err != nil {
 		return err
